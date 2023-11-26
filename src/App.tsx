@@ -1,21 +1,44 @@
-import ListGroup from "./component/ListGroup";
+import { useState } from "react";
+import Alert from "./component/Alert";
+import Button from "./component/Button";
+import ListGroup from "./component/ListGroup/ListGroup";
+import Dismissing from "./component/DismissingAlert";
 
 const App = () => {
-  let items = ["Brazil", "Maranhão", "São Paulo", "Rio de Janeiro", "Salvador"];
-  let heading = "Cities";
+  const cities = ["Brasil", "São Paulo", "Salvador"];
+  const [test, setTest] = useState("");
+  const [showAlert, setShowAlert] = useState(true);
 
   const handleSelectItem = (item: string) => {
-    console.log(item);
+    setTest(item);
+    console.log(test);
+  };
+
+  const handleShowAlert = () => {
+    setShowAlert(!showAlert);
   };
 
   return (
-    <div>
+    <>
+      <Alert>
+        Hello <b>World</b>
+      </Alert>
+      {cities.length === 0 && <p>No content</p>}
       <ListGroup
-        items={items}
-        heading={heading}
+        items={cities}
+        heading="Cities"
         onSelectItem={handleSelectItem}
       />
-    </div>
+      <Button onClick={() => console.log("clicked")}>Danger</Button>
+      {showAlert && (
+        <Dismissing onClick={() => setShowAlert(!showAlert)}>
+          My Alert
+        </Dismissing>
+      )}
+      <Button onClick={handleShowAlert} type="danger">
+        {showAlert ? "ON" : "OFF"}
+      </Button>
+    </>
   );
 };
 
