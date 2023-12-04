@@ -6,20 +6,18 @@ import Dismissing from "./component/DismissingAlert";
 import Like from "./component/Like/Like";
 
 const App = () => {
-  const [game, setGame] = useState({
-    id: 1,
-    player: {
-      name: "Jean",
-    },
+  const [drink, setDrink] = useState({
+    title: "Americano",
+    price: 5,
   });
 
   const handleClick = () => {
-    setGame({ ...game });
+    setDrink({ ...drink, price: 6 });
   };
 
   return (
     <>
-      {game.player.name}
+      {drink.price}
       <button onClick={handleClick}>Mudar nome</button>
     </>
   );
