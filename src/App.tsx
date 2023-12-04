@@ -6,18 +6,24 @@ import Dismissing from "./component/DismissingAlert";
 import Like from "./component/Like/Like";
 
 const App = () => {
-  const [drink, setDrink] = useState({
-    title: "Americano",
-    price: 5,
+  const [customer, setCustomer] = useState({
+    name: "Jonh",
+    address: {
+      city: "San Francisoco",
+      zipCode: 94111,
+    },
   });
 
   const handleClick = () => {
-    setDrink({ ...drink, price: 6 });
+    setCustomer({
+      ...customer,
+      address: { ...customer.address, zipCode: 94112 },
+    });
   };
 
   return (
     <>
-      {drink.price}
+      {customer.address.zipCode}
       <button onClick={handleClick}>Mudar nome</button>
     </>
   );
