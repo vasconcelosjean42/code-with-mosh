@@ -1,27 +1,31 @@
 import { useState } from "react";
-import Alert from "./component/Alert";
-import Button from "./component/Button";
-import ListGroup from "./component/ListGroup/ListGroup";
-import Dismissing from "./component/DismissingAlert";
-import Like from "./component/Like/Like";
+import produce from "immer";
+import NavBar from "./component/NavBar";
+import Cart from "./component/Cart";
 
 const App = () => {
-  const [tags, setTags] = useState(["happy", "cheerful"]);
+  const [cartItems, setCartItems] = useState(["Product 1", "Product 2"]);
 
   const handleClick = () => {
-    //Add
-    setTags([...tags, "exciting"]);
-
-    //Remove
-    setTags(tags.filter((tag) => tag !== "happy"));
-
-    //Update
-    setTags(tags.filter((tag) => (tag === "happy" ? "happiness" : tag)));
+    setCartItems((prevState) => [
+      ...prevState,
+      `Product ${prevState.length + 1}`,
+    ]);
   };
+
   return (
     <>
-      {customer.address.zipCode}
-      <button onClick={handleClick}>Mudar nome</button>
+      <NavBar cartItemsCount={cartItems.length} />
+      <Cart
+        cartItems={cartItems}
+        onClick={handleClick}
+        onClear={() => setCartItems([])}
+        onRemove={(product: string) =>
+          setCartItems((prevState) =>
+            prevState.filter((item) => item !== product)
+          )
+        }
+      />
     </>
   );
 };
