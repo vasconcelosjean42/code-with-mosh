@@ -1,9 +1,9 @@
-import Form from "./Form";
+import FormControlled from "./component/FormControlled";
 
 const App = () => {
   return (
     <>
-      <Form></Form>
+      <FormControlled></FormControlled>
     </>
   );
 };
