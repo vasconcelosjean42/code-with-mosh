@@ -9,13 +9,7 @@ export interface itemProps {
 }
 
 const App = () => {
-  const [item, setItem] = useState<itemProps[]>([
-    {
-      description: "",
-      amount: 0,
-      category: "",
-    },
-  ]);
+  const [item, setItem] = useState<itemProps[]>();
 
   const onSubmit = (data: itemProps) => {
     const newItem = {
@@ -23,17 +17,19 @@ const App = () => {
       amount: data.amount,
       category: data.category,
     };
-    setItem((prevState) => [...prevState, newItem]);
+    setItem((prevState) => (prevState ? [...prevState, newItem] : [newItem]));
   };
 
   const handleDelete = (index: number) => {
-    setItem((prevState) => [...prevState].filter((item, i) => i !== index));
+    setItem((prevState) => {
+      if (prevState) return [...prevState].filter((item, i) => i !== index);
+    });
   };
 
   return (
     <>
       <Form onSubmit={onSubmit}></Form>
-      <List items={item} handleDelete={handleDelete}></List>
+      {item ? <List items={item} handleDelete={handleDelete}></List> : null}
     </>
   );
 };

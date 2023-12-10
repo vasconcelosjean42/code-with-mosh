@@ -31,6 +31,7 @@ const Form = ({ onSubmit }: Props) => {
         <input
           {...register("description")}
           id="description"
+          name="description"
           type="text"
           className="form-control"
         />
@@ -45,6 +46,7 @@ const Form = ({ onSubmit }: Props) => {
         <input
           {...register("amount", { valueAsNumber: true })}
           id="amount"
+          name="amount"
           type="number"
           className="form-control"
         />
