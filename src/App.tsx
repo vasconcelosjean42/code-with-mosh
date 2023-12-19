@@ -29,7 +29,7 @@ const App = () => {
   return (
     <>
       <Form onSubmit={onSubmit}></Form>
-      {item ? <List items={item} handleDelete={handleDelete}></List> : null}
+      {item ? <List items={item} onDelete={handleDelete}></List> : null}
     </>
   );
 };

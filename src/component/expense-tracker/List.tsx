@@ -3,10 +3,10 @@ import { itemProps } from "../../App";
 
 interface Props {
   items: itemProps[];
-  handleDelete: (index: number) => void;
+  onDelete: (index: number) => void;
 }
 
-const List = ({ items, handleDelete }: Props) => {
+const List = ({ items, onDelete }: Props) => {
   const [categorie, setCategorie] = useState("All");
   const filteredItems =
     categorie === "All"
@@ -43,28 +43,32 @@ const List = ({ items, handleDelete }: Props) => {
               {filteredItems.map((item, i) => (
                 <tr key={i}>
                   <td>{item.description}</td>
-                  <td>${item.amount}.00</td>
+                  <td>${item.amount.toFixed(2)}</td>
                   <td>{item.category}</td>
                   <td>
                     <button
                       className="btn btn-outline-danger"
-                      onClick={() => handleDelete(i)}
+                      onClick={() => onDelete(i)}
                     >
                       Delete
                     </button>
                   </td>
                 </tr>
               ))}
+            </tbody>
+            <tfoot>
               <tr>
                 <td>Total</td>
                 <td>
-                  ${filteredItems.reduce((prev, cur) => prev + cur.amount, 0)}
-                  .00
+                  $
+                  {filteredItems
+                    .reduce((prev, cur) => prev + cur.amount, 0)
+                    .toFixed(2)}
                 </td>
                 <td></td>
                 <td></td>
               </tr>
-            </tbody>
+            </tfoot>
           </table>
         </div>
       ) : null}
