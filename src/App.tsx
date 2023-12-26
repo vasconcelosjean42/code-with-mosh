@@ -37,8 +37,12 @@ const App = () => {
       .get("https://jsonplaceholder.typicode.com/users", {
         signal: controller.signal,
       })
-      .then((res) => setUsers(res.data))
-      .catch((err: { message: string }) => {
+      .then((res) => {
+        console.log(res.data);
+
+        setUsers(res.data);
+      })
+      .catch((err: AxiosError) => {
         if (err instanceof CanceledError) return;
         setError(err.message);
       })
@@ -47,26 +51,59 @@ const App = () => {
       });
 
     return () => controller.abort();
-    // const getData = async () => {
-    //   try {
-    //     const res = await axios.get(
-    //       "https://jsonplaceholder.typicode.com/xusers"
-    //     );
-    //     console.log(res);
-    //   } catch (err) {
-    //     setError((err as AxiosError).message);
-    //   }
-    // };
-    // getData();
   }, []);
+
+  const addUser = () => {
+    const originalUsers = [...users];
+    const newUser = {
+      ...users[1],
+      id: users.length + 1,
+      name: "Jean Vasconcelos",
+    };
+    setUsers((prevState) => [...prevState, newUser]);
+    axios
+      .post("https://jsonplaceholder.typicode.com/xusers/", newUser)
+      .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
+  const deleteUser = (id: number) => {
+    const originalUsers = [...users];
+    setUsers((prevState) => prevState.filter((user) => user.id !== id));
+    axios
+      .delete("https://jsonplaceholder.typicode.com/users/" + id)
+      .catch((err: AxiosError) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
 
   return (
     <>
       {error && <div className="alert alert-danger">{error}</div>}
       {isLoading && <div className="spinner-border"></div>}
-      {users.map((user) => (
-        <p>{user.name}</p>
-      ))}
+      <button className="btn btn-primary mb-3" onClick={() => addUser()}>
+        Add user
+      </button>
+      <ul className="list-group">
+        {users.map((user) => (
+          <li
+            key={user.id}
+            className="list-group-item d-flex justify-content-between"
+          >
+            {user.name}
+            <button
+              className="btn btn-outline-danger mb-3"
+              onClick={() => deleteUser(user.id)}
+            >
+              delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </>
   );
 };
