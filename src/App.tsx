@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, CanceledError } from "axios";
 import { useEffect, useState } from "react";
 
 type UserProps = {
@@ -28,16 +28,42 @@ type UserProps = {
 const App = () => {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
   useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
     axios
-      .get("https://jsonplaceholder.typicode.com/xusers")
+      .get("https://jsonplaceholder.typicode.com/users", {
+        signal: controller.signal,
+      })
       .then((res) => setUsers(res.data))
-      .catch((err: { message: string }) => setError(err.message));
+      .catch((err: { message: string }) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    return () => controller.abort();
+    // const getData = async () => {
+    //   try {
+    //     const res = await axios.get(
+    //       "https://jsonplaceholder.typicode.com/xusers"
+    //     );
+    //     console.log(res);
+    //   } catch (err) {
+    //     setError((err as AxiosError).message);
+    //   }
+    // };
+    // getData();
   }, []);
 
   return (
     <>
       {error && <div className="alert alert-danger">{error}</div>}
+      {isLoading && <div className="spinner-border"></div>}
       {users.map((user) => (
         <p>{user.name}</p>
       ))}
