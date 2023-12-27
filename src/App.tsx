@@ -70,6 +70,21 @@ const App = () => {
       });
   };
 
+  const editUser = (user: UserProps) => {
+    const originalUsers = [...users];
+    const updatedUser = { ...user, name: "Jean Vasconcelos" };
+    setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+    axios
+      .patch(
+        "https://jsonplaceholder.typicode.com/xusers/" + user.id,
+        updatedUser
+      )
+      .catch((err: AxiosError) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
   const deleteUser = (id: number) => {
     const originalUsers = [...users];
     setUsers((prevState) => prevState.filter((user) => user.id !== id));
@@ -95,12 +110,20 @@ const App = () => {
             className="list-group-item d-flex justify-content-between"
           >
             {user.name}
-            <button
-              className="btn btn-outline-danger mb-3"
-              onClick={() => deleteUser(user.id)}
-            >
-              delete
-            </button>
+            <div>
+              <button
+                className="btn btn-outline-danger mb-3 mx-1"
+                onClick={() => deleteUser(user.id)}
+              >
+                delete
+              </button>
+              <button
+                className="btn btn-outline-warning mb-3"
+                onClick={() => editUser(user)}
+              >
+                edit
+              </button>
+            </div>
           </li>
         ))}
       </ul>
