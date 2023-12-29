@@ -1,36 +1,10 @@
 import { useEffect, useState } from "react";
-import apiClient, { CanceledError, AxiosError } from "./services/api-client";
-import {
-  User,
-  createUser,
-  deleteUser,
-  getAllUsers,
-  updateUser,
-} from "./services/user-service";
+import { CanceledError, AxiosError } from "./services/api-client";
+import userService, { User } from "./services/user-service";
+import useUsers from "./hooks/useUsers";
 
 const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    const { request, cancel } = getAllUsers();
-    request
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err: AxiosError) => {
-        if (err instanceof CanceledError) return;
-        setError(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    return () => cancel();
-  }, []);
-
+  const { users, error, isLoading, setUsers, setError } = useUsers();
   const addUser = () => {
     const originalUsers = [...users];
     const newUser = {
@@ -38,7 +12,8 @@ const App = () => {
       name: "Jean Vasconcelos",
     };
     setUsers((prevState) => [...prevState, newUser]);
-    createUser(newUser)
+    userService
+      .create(newUser)
       .then(({ data: savedUser }) => setUsers([...users, savedUser]))
       .catch((err) => {
         setError(err.message);
@@ -50,7 +25,7 @@ const App = () => {
     const originalUsers = [...users];
     const newUser = { ...user, name: "Jean Vasconcelos" };
     setUsers(users.map((u) => (u.id === user.id ? newUser : u)));
-    updateUser(user.id, newUser).catch((err: AxiosError) => {
+    userService.update(newUser).catch((err: AxiosError) => {
       setError(err.message);
       setUsers(originalUsers);
     });
@@ -59,7 +34,7 @@ const App = () => {
   const removeUser = (id: number) => {
     const originalUsers = [...users];
     setUsers((prevState) => prevState.filter((user) => user.id !== id));
-    deleteUser(id).catch((err: AxiosError) => {
+    userService.remove(id).catch((err: AxiosError) => {
       setError(err.message);
       setUsers(originalUsers);
     });
